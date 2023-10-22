@@ -1,8 +1,8 @@
 import { IconMenu2 } from '@tabler/icons-react';
 import { useAuth } from '@/hooks/auth';
 import ThemeToggle from '@/components/ThemeToggle';
-import TopbarUserLogin from '@/components/Layouts/topbar-user-login';
-import TopbarUserInfo from '@/components/Layouts/topbar-user-info';
+import TopbarUserLogin from '@/components/Layouts/TopbarUserLogin';
+import TopbarUserInfo from '@/components/Layouts/TopbarUserInfo';
 import ApplicationLogo from '@/components/ApplicationLogo';
 
 type Props = { onMenuClick: () => void; hideSidebar?: boolean };

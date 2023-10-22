@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import LoginPopup from '@/components/login-popup';
-import RegisterPopup from '@/components/register-popup';
+import LoginPopup from '@/components/LoginPopup';
+import RegisterPopup from '@/components/RegisterPopup';
 import { Button } from 'antd';
 
 export default function TopbarUserLogin() {

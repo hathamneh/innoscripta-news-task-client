@@ -1,6 +1,6 @@
 import cx from 'classnames';
 import { IconFlame, IconHome } from '@tabler/icons-react';
-import SidebarLink from './sidebar-link';
+import SidebarLink from './SidebarLink';
 import { TopSourcesList } from '@/components/TopSourcesList';
 import { TopCategoriesList } from '@/components/TopCategoriesList';
 

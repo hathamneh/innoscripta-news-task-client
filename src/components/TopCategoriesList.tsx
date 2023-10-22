@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from '@/lib/axios';
-import SidebarLink from '@/components/Layouts/sidebar-link';
+import SidebarLink from '@/components/Layouts/SidebarLink';
 import useSWR from 'swr';
 import { capitalize } from '@/utils/strings';
 

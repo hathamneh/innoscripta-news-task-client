@@ -1,6 +1,6 @@
 import React from 'react';
 import { IconAdjustmentsFilled } from '@tabler/icons-react';
-import SearchBar from '@/components/search-bar';
+import SearchBar from '@/components/SearchBar';
 import { CategorySelect } from '@/components/Filters/CategorySelect';
 import { SourcesSelect } from '@/components/Filters/SourcesSelect';
 import { CountriesSelect } from '@/components/Filters/CountriesSelect';

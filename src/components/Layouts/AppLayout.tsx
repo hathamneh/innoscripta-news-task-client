@@ -1,6 +1,6 @@
 import { PropsWithChildren, useState } from 'react';
-import Topbar from '@/components/Layouts/topbar';
-import Sidebar from '@/components/Layouts/sidebar';
+import Topbar from '@/components/Layouts/Topbar';
+import Sidebar from '@/components/Layouts/Sidebar';
 
 type Props = {
   hideSidebar?: boolean;
