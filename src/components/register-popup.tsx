@@ -1,11 +1,9 @@
-import Modal from '@/components/Modal';
 import { AuthErrors, useAuth } from '@/hooks/auth';
-import Label from '@/components/Label';
-import Input from '@/components/Input';
-import InputError from '@/components/InputError';
-import PrimaryButton from '@/components/Buttons/PrimaryButton';
+import Label from '@/ui/Label';
+import Input from '@/ui/Input';
+import InputError from '@/ui/InputError';
 import { FormEventHandler, useState } from 'react';
-import LinkButton from '@/components/Buttons/LinkButton';
+import { Button, Modal } from 'antd';
 
 type Props = {
   visible?: boolean;
@@ -45,11 +43,13 @@ export default function RegisterPopup({
   };
 
   return (
-    <Modal show={visible} onClose={onClose} maxWidth="md">
-      <div className="space-y-6 p-6">
-        <h3 className="text-xl font-medium text-gray-900 dark:text-white">
-          Register
-        </h3>
+    <Modal
+      open={visible}
+      onCancel={onClose}
+      width="600px"
+      title="Register"
+      footer={null}>
+      <div className="space-y-6 p-6 max-w-md mx-auto">
         <form onSubmit={submitForm}>
           {/* Name */}
           <div>
@@ -119,11 +119,13 @@ export default function RegisterPopup({
               className="mt-2"
             />
           </div>
-
-          <div className="flex items-center justify-between mt-4">
-            <LinkButton onClick={onGoToLogin}>Already registered?</LinkButton>
-
-            <PrimaryButton className="ml-4">Register</PrimaryButton>
+          <div className="flex mt-4 justify-between">
+            <Button type="link" onClick={onGoToLogin}>
+              Already registered?
+            </Button>
+            <Button type="primary" htmlType="submit">
+              Register
+            </Button>
           </div>
         </form>
       </div>

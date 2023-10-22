@@ -1,7 +1,7 @@
 import AuthCard from '@/components/AuthCard';
 import AuthSessionStatus from '@/components/AuthSessionStatus';
 import GuestLayout from '@/components/Layouts/GuestLayout';
-import PrimaryButton from '@/components/Buttons/PrimaryButton';
+import PrimaryButton from '@/ui/Buttons/PrimaryButton';
 import { useAuth } from '@/hooks/auth';
 import { useState } from 'react';
 

@@ -1,15 +1,12 @@
-import Modal from '@/components/Modal';
 import { AuthErrors, useAuth } from '@/hooks/auth';
-import Label from '@/components/Label';
-import Input from '@/components/Input';
+import Label from '@/ui/Label';
+import Input from '@/ui/Input';
 import AuthSessionStatus from '@/components/AuthSessionStatus';
-import InputError from '@/components/InputError';
-import Checkbox from '@/components/Checkbox';
-import Link from 'next/link';
+import InputError from '@/ui/InputError';
+import Checkbox from '@/ui/Checkbox';
 import { useRouter } from 'next/router';
 import { FormEventHandler, useEffect, useState } from 'react';
-import { PrimaryButton } from '@/components/Buttons';
-import LinkButton from '@/components/Buttons/LinkButton';
+import { Button, Modal } from 'antd';
 
 type Props = {
   visible?: boolean;
@@ -62,11 +59,13 @@ export default function LoginPopup({
     }
   };
   return (
-    <Modal show={visible} onClose={onClose} maxWidth="md">
-      <div className="space-y-6 p-6">
-        <h3 className="text-xl font-medium text-gray-900 dark:text-white">
-          Sign in
-        </h3>
+    <Modal
+      open={visible}
+      onCancel={onClose}
+      width="600px"
+      title="Login"
+      footer={null}>
+      <div className="space-y-6 p-6 pt-12 max-w-md mx-auto">
         {/* Session Status */}
         <AuthSessionStatus className="mb-4" status={status} />
 
@@ -121,11 +120,13 @@ export default function LoginPopup({
           </div>
 
           <div className="flex items-center justify-end mt-4">
-            <Link href="/forgot-password" className="link">
+            <Button type="link" href="/forgot-password">
               Forgot your password?
-            </Link>
+            </Button>
 
-            <PrimaryButton className="ml-4">Login</PrimaryButton>
+            <Button type="primary" className="ml-4" htmlType="submit">
+              Login
+            </Button>
           </div>
           <hr className="my-6 border-gray-300 dark:border-gray-700 w-full" />
           <div className="flex items-center justify-center mt-4">
@@ -133,9 +134,9 @@ export default function LoginPopup({
               Don't have an account?
             </span>
 
-            <LinkButton onClick={onGoToRegister} className="ml-4">
+            <Button type="link" onClick={onGoToRegister} className="ml-4">
               Create an account
-            </LinkButton>
+            </Button>
           </div>
         </form>
       </div>

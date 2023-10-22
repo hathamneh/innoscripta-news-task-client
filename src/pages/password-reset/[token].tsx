@@ -1,13 +1,13 @@
 import AuthCard from '@/components/AuthCard';
 import AuthSessionStatus from '@/components/AuthSessionStatus';
 import GuestLayout from '@/components/Layouts/GuestLayout';
-import Input from '@/components/Input';
-import InputError from '@/components/InputError';
-import Label from '@/components/Label';
-import { useAuth } from '@/hooks/auth';
+import Input from '@/ui/Input';
+import InputError from '@/ui/InputError';
+import Label from '@/ui/Label';
+import { AuthErrors, useAuth } from '@/hooks/auth';
 import { FormEventHandler, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import PrimaryButton from '@/components/Buttons/PrimaryButton';
+import PrimaryButton from '@/ui/Buttons/PrimaryButton';
 
 const PasswordReset = () => {
   const { query } = useRouter();
@@ -17,7 +17,7 @@ const PasswordReset = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
-  const [errors, setErrors] = useState([]);
+  const [errors, setErrors] = useState<AuthErrors>({});
   const [status, setStatus] = useState(null);
 
   const submitForm: FormEventHandler = event => {

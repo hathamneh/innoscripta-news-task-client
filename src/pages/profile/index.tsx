@@ -1,45 +1,57 @@
-import AppLayout from '@/components/Layouts/AppLayout'
-import Head from 'next/head'
-import UpdateProfileInformationForm from './partials/UpdateProfileInformationForm'
-import DeleteUserForm from './partials/DeleteUserForm'
-import UpdatePasswordForm from './partials/UpdatePasswordForm'
+import AppLayout from '@/components/Layouts/AppLayout';
+import Head from 'next/head';
+import { Tabs } from 'antd';
+import { useScreenLg } from '@/hooks/media-query';
+import { MyFeedSettings } from '@/components/UserSettings/MyFeedSettings';
+import { useAuth } from '@/hooks/auth';
+import { ProfileSettings } from '@/components/UserSettings/ProfileSettings';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 
 const Profile = () => {
-    return (
-        <AppLayout
-            header={
-                <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                    Profile
-                </h2>
-            }>
-            <Head>
-                <title>Laravel - Profile</title>
-            </Head>
+  const router = useRouter();
+  useAuth({
+    middleware: 'auth',
+    redirectIfNotAuthenticated: '/latest',
+  });
+  const [tab, setTab] = useState('profile');
 
-            <div className="py-12">
-                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+  useEffect(() => {
+    if (router.query.tab) {
+      setTab(router.query.tab as string);
+    }
+  }, [router.query.tab]);
 
-                    <div className="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                        <div className="max-w-xl">
-                            <UpdateProfileInformationForm />
-                        </div>
-                    </div>
+  const matches = useScreenLg();
+  return (
+    <AppLayout hideSidebar>
+      <Head>
+        <title>Settings</title>
+      </Head>
 
-                    <div className="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                        <div className="max-w-xl">
-                           <UpdatePasswordForm />
-                        </div>
-                    </div>
+      <div className="py-12">
+        <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+          <h2 className="font-semibold text-2xl text-gray-800 dark:text-gray-200 leading-tight mb-8">
+            Settings
+          </h2>
 
-                    <div className="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                        <div className="max-w-xl">
-                            <DeleteUserForm />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </AppLayout>
-    )
-}
+          <Tabs
+            activeKey={tab}
+            onChange={key => router.push(`/profile?tab=${key}`)}
+            tabPosition={matches ? 'left' : 'top'}
+            items={[
+              {
+                key: 'profile',
+                label: 'Profile',
+                children: <ProfileSettings />,
+              },
+              { key: 'feed', label: 'My Feed', children: <MyFeedSettings /> },
+            ]}
+          />
+        </div>
+      </div>
+    </AppLayout>
+  );
+};
 
-export default Profile
+export default Profile;

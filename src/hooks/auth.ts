@@ -2,6 +2,7 @@ import useSWR from 'swr';
 import axios, { csrf } from '@/lib/axios';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { isAxiosError } from 'axios';
 
 declare type AuthMiddleware = 'auth' | 'guest';
 
@@ -9,12 +10,14 @@ export type AuthErrors = {
   email?: string[];
   password?: string[];
   password_confirmation?: string[];
+  current_password?: string[];
   name?: string[];
 };
 
 interface IUseAuth {
   middleware?: AuthMiddleware;
   redirectIfAuthenticated?: string;
+  redirectIfNotAuthenticated?: string;
 }
 
 interface IApiRequest {
@@ -23,36 +26,52 @@ interface IApiRequest {
   [key: string]: any;
 }
 
+export type UserSettings = {
+  categories?: string[];
+  sources?: string[];
+  countries?: string[];
+  languages?: string[];
+};
+
 export interface User {
   id?: number;
-  name?: string;
-  email?: string;
+  name: string;
+  email: string;
   email_verified_at?: string;
   must_verify_email?: boolean; // this is custom attribute
   created_at?: string;
   updated_at?: string;
+  settings?: UserSettings;
 }
 
 export const useAuth = ({
   middleware,
   redirectIfAuthenticated,
+  redirectIfNotAuthenticated,
 }: IUseAuth = {}) => {
   const router = useRouter();
 
   const {
     data: user,
     error,
+    isLoading,
     mutate,
-  } = useSWR<User>('/api/user', () =>
-    axios
-      .get('/api/user')
-      .then(res => res.data)
-      .catch(error => {
-        if (error.response.status !== 409) throw error;
-
-        router.push('/verify-email');
-      }),
-  );
+  } = useSWR<User>('/api/user', async () => {
+    try {
+      const { data } = await axios.get('/api/user');
+      return data.data;
+    } catch (error) {
+      if (isAxiosError(error) && error.response) {
+        if (error.response.status === 409) {
+          await router.push('/verify-email');
+        }
+        if (error.response.status === 401) {
+          return null;
+        }
+      }
+      throw error;
+    }
+  });
 
   const register = async (args: IApiRequest) => {
     const { setErrors, ...props } = args;
@@ -61,14 +80,16 @@ export const useAuth = ({
 
     setErrors({});
 
-    axios
-      .post('/register', props)
-      .then(() => mutate())
-      .catch(error => {
+    try {
+      await axios.post('/register', props);
+      mutate();
+    } catch (error) {
+      if (isAxiosError(error) && error.response) {
         if (error.response.status !== 422) throw error;
-
         setErrors(error.response.data.errors);
-      });
+      }
+      throw error;
+    }
   };
 
   const login = async (args: IApiRequest) => {
@@ -79,13 +100,16 @@ export const useAuth = ({
     setErrors({});
     setStatus(null);
 
-    axios
-      .post('/login', props)
-      .then(() => mutate())
-      .catch(error => {
+    try {
+      await axios.post('/login', props);
+      mutate();
+    } catch (error) {
+      if (isAxiosError(error) && error.response) {
         if (error.response.status !== 422) throw error;
         setErrors(error.response.data.errors);
-      });
+      }
+      throw error;
+    }
   };
 
   const forgotPassword = async (args: IApiRequest) => {
@@ -95,14 +119,16 @@ export const useAuth = ({
     setErrors({});
     setStatus(null);
 
-    axios
-      .post('/forgot-password', { email })
-      .then(response => setStatus(response.data.status))
-      .catch(error => {
+    try {
+      const { data } = await axios.post('/forgot-password', { email });
+      setStatus(data.status);
+    } catch (error) {
+      if (isAxiosError(error) && error.response) {
         if (error.response.status !== 422) throw error;
-
         setErrors(error.response.data.errors);
-      });
+      }
+      throw error;
+    }
   };
 
   const resetPassword = async (args: IApiRequest) => {
@@ -112,29 +138,32 @@ export const useAuth = ({
     setErrors({});
     setStatus(null);
 
-    axios
-      .post('/reset-password', { token: router.query.token, ...props })
-      .then(response =>
-        router.push('/login?reset=' + btoa(response.data.status)),
-      )
-      .catch(error => {
-        if (error.response.status !== 422) throw error;
-
-        setErrors(error.response.data.errors);
+    try {
+      const { data } = await axios.post('/reset-password', {
+        token: router.query.token,
+        ...props,
       });
+      router.push('/login?reset=' + btoa(data.status));
+    } catch (error) {
+      if (isAxiosError(error) && error.response) {
+        if (error.response.status !== 422) throw error;
+        setErrors(error.response.data.errors);
+      }
+      throw error;
+    }
   };
 
-  const resendEmailVerification = (args: IApiRequest) => {
+  const resendEmailVerification = async (args: IApiRequest) => {
     const { setStatus } = args;
 
-    axios
-      .post('/email/verification-notification')
-      .then(response => setStatus(response.data.status));
+    const { data } = await axios.post('/email/verification-notification');
+    setStatus(data.status);
   };
 
   const logout = async () => {
     if (!error) {
-      await axios.post('/logout').then(() => mutate());
+      await axios.post('/logout');
+      mutate();
     }
   };
 
@@ -148,11 +177,15 @@ export const useAuth = ({
       redirectIfAuthenticated
     )
       router.push(redirectIfAuthenticated);
-    if (middleware === 'auth' && error) logout();
+    if (middleware === 'auth' && error) {
+      if (redirectIfNotAuthenticated) router.push(redirectIfNotAuthenticated);
+      else logout();
+    }
   }, [user, error]);
 
   return {
     user,
+    isLoading,
     register,
     login,
     forgotPassword,
