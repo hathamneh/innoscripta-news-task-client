@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@ant-design/cssinjs": "^1.17.2",
-    "@headlessui/react": "^1.7.13",
     "@tabler/icons-react": "^2.39.0",
     "@types/node": "18.15.9",
     "@types/react": "18.0.29",

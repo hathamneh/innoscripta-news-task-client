@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import Input from '@/ui/Input';
 import axios, { csrf } from '@/lib/axios';
 import { AuthErrors, useAuth } from '@/hooks/auth';
-import { Transition } from '@headlessui/react';
 import { Button, Form } from 'antd';
 
 const UpdateProfileInformationForm = () => {
@@ -110,13 +109,7 @@ const UpdateProfileInformationForm = () => {
           </Button>
 
           {status === 'profile-updated' && (
-            <Transition
-              show={true}
-              enterFrom="opacity-0"
-              leaveTo="opacity-0"
-              className="transition ease-in-out">
-              <p className="text-sm text-gray-600 dark:text-gray-400">Saved.</p>
-            </Transition>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Saved.</p>
           )}
         </div>
       </Form>
