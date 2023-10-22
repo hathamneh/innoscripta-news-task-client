@@ -13,6 +13,26 @@
   }
 
   .link {
-    @apply underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800;
+    @apply underline text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md;
   }
+}
+
+.ant-select {
+  @apply lg:max-w-[250px] w-full;
+}
+
+.ant-btn {
+  @apply !inline-flex gap-2 items-center justify-center rounded-md shadow-sm uppercase;
+}
+
+.ant-btn.ant-btn-link {
+  @apply link shadow-none p-0;
+}
+
+.ant-btn.ant-btn-link > * {
+  @apply underline;
+}
+
+.ant-btn .ant-btn-icon {
+  margin-inline-end: 0 !important;
 }

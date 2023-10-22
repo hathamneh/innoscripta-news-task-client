@@ -1,22 +1,22 @@
 import { FormEventHandler, useEffect, useState } from 'react';
-import Input from '@/components/Input';
-import InputError from '@/components/InputError';
-import Label from '@/components/Label';
+import Input from '@/ui/Input';
+import InputError from '@/ui/InputError';
+import Label from '@/ui/Label';
 import axios, { csrf } from '@/lib/axios';
-import { useAuth } from '@/hooks/auth';
+import { AuthErrors, useAuth } from '@/hooks/auth';
 import { Transition } from '@headlessui/react';
-import PrimaryButton from '@/components/Buttons/PrimaryButton';
+import { Button } from 'antd';
 
 const UpdateProfileInformationForm = () => {
   const { user, resendEmailVerification } = useAuth({ middleware: 'auth' });
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [errors, setErrors] = useState([]);
+  const [errors, setErrors] = useState<AuthErrors>({});
   const [status, setStatus] = useState(null);
 
   useEffect(() => {
-    if (user !== undefined) {
+    if (user) {
       setName(user.name);
       setEmail(user.email);
     }
@@ -27,7 +27,7 @@ const UpdateProfileInformationForm = () => {
 
     await csrf();
 
-    setErrors([]);
+    setErrors({});
     setStatus(null);
 
     axios
@@ -110,7 +110,9 @@ const UpdateProfileInformationForm = () => {
         )}
 
         <div className="flex items-center gap-4">
-          <PrimaryButton>Save</PrimaryButton>
+          <Button type="primary" htmlType="submit">
+            Save
+          </Button>
 
           {status === 'profile-updated' && (
             <Transition

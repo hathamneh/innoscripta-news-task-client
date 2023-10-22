@@ -1,18 +1,19 @@
-import Input from '@/components/Input';
-import InputError from '@/components/InputError';
-import Label from '@/components/Label';
+import Input from '@/ui/Input';
+import InputError from '@/ui/InputError';
+import Label from '@/ui/Label';
 import { Transition } from '@headlessui/react';
 
 import { FormEventHandler, useState } from 'react';
 import axios, { csrf } from '@/lib/axios';
-import PrimaryButton from '@/components/Buttons/PrimaryButton';
+import { AuthErrors } from '@/hooks/auth';
+import { Button } from 'antd';
 
 const UpdatePasswordForm = () => {
   const [currentPassword, setCurrentPassword] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
 
-  const [errors, setErrors] = useState([]);
+  const [errors, setErrors] = useState<AuthErrors>({});
   const [status, setStatus] = useState<string | null>(null);
 
   const submitForm: FormEventHandler = async event => {
@@ -20,7 +21,7 @@ const UpdatePasswordForm = () => {
 
     await csrf();
 
-    setErrors([]);
+    setErrors({});
     setStatus(null);
 
     axios
@@ -96,7 +97,9 @@ const UpdatePasswordForm = () => {
         </div>
 
         <div className="flex items-center gap-4">
-          <PrimaryButton>Save</PrimaryButton>
+          <Button type="primary" htmlType="submit">
+            Save
+          </Button>
 
           {status === 'password-updated' && (
             <Transition
