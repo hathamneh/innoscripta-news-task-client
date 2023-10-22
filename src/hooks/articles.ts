@@ -4,7 +4,10 @@ import { FiltersValue } from '@/hooks/articles-filters';
 
 export type Article = {
   id: number;
-  source: string;
+  source: {
+    id: string;
+    name: string;
+  };
   author: string;
   title: string;
   description?: string;
@@ -12,6 +15,7 @@ export type Article = {
   image: string;
   publishedAt: string;
   categories: { id: string; name: string }[];
+  language: string;
 };
 
 export type ArticlesResponse = {
@@ -27,6 +31,7 @@ type Props = {
 };
 
 export function useArticles({ filters, fetchOnMount }: Props = {}) {
+  const [loaded, setLoaded] = useState(false);
   const [articles, setArticles] = useState<Article[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -34,6 +39,7 @@ export function useArticles({ filters, fetchOnMount }: Props = {}) {
   const [error, setError] = useState<string | null>(null);
 
   const loadArticles = async (overrides: { page?: number } = {}) => {
+    setLoaded(true);
     setIsLoading(true);
     try {
       const { data: loadedArticles } = await axios.get<ArticlesResponse>(
@@ -53,7 +59,7 @@ export function useArticles({ filters, fetchOnMount }: Props = {}) {
   };
 
   useEffect(() => {
-    if (fetchOnMount === false) return;
+    if (fetchOnMount === false && !loaded) return;
     loadArticles().then(loadedArticles => {
       if (loadedArticles) {
         setArticles(prevArticles => [...prevArticles, ...loadedArticles.data]);

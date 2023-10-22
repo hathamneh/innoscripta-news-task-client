@@ -3,7 +3,7 @@ import { Article } from '@/hooks/articles';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import Link from 'next/link';
-import { Card } from 'antd';
+import { Button, Card } from 'antd';
 import { capitalize } from '@/utils/strings';
 
 dayjs.extend(relativeTime);
@@ -13,12 +13,17 @@ type Props = {
 };
 
 export const ArticleCard = ({ article }: Props) => {
+  const isRtl = article.language === 'he' || article.language === 'ar';
+
   return (
     <Card>
       <div className="flex gap-2 mb-3">
-        <span className="text-sm font-bold text-slate-600 dark:text-slate-400">
-          {capitalize(article.source)}
-        </span>
+        <Link
+          href={`/source/${article.source.id}`}
+          passHref
+          className="text-sm font-bold text-slate-600 dark:text-slate-400">
+          {capitalize(article.source.name)}
+        </Link>
         <span className="text-sm text-slate-300 dark:text-slate-500">•</span>
         <span
           className="text-sm text-slate-600 dark:text-slate-400"
@@ -26,15 +31,22 @@ export const ArticleCard = ({ article }: Props) => {
           {dayjs(article.publishedAt).fromNow()}
         </span>
       </div>
-      <h2 className="text-xl font-bold mb-2">{article.title}</h2>
-      <p className="text-sm">{article.description}</p>
-      <a
-        className="link inline-block mt-2"
-        href={article.url}
-        target="_blank"
-        rel="noreferrer">
-        Read more
-      </a>
+      <h2 className="text-xl font-bold mb-2" dir={isRtl ? 'rtl' : 'ltr'}>
+        {article.title}
+      </h2>
+      <p className="text-sm" dir={isRtl ? 'rtl' : 'ltr'}>
+        {article.description}
+      </p>
+      <div className="mt-4 text-end" dir={isRtl ? 'rtl' : 'ltr'}>
+        <Button
+          type="primary"
+          ghost
+          href={article.url}
+          target="_blank"
+          rel="noreferrer">
+          Read more
+        </Button>
+      </div>
       {article.image && (
         <img
           src={article.image}
