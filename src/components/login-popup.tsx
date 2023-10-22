@@ -1,12 +1,9 @@
 import { AuthErrors, useAuth } from '@/hooks/auth';
-import Label from '@/ui/Label';
 import Input from '@/ui/Input';
 import AuthSessionStatus from '@/components/AuthSessionStatus';
-import InputError from '@/ui/InputError';
-import Checkbox from '@/ui/Checkbox';
 import { useRouter } from 'next/router';
-import { FormEventHandler, useEffect, useState } from 'react';
-import { Button, Modal } from 'antd';
+import { useEffect, useState } from 'react';
+import { Button, Checkbox, Form, Modal } from 'antd';
 
 type Props = {
   visible?: boolean;
@@ -42,9 +39,7 @@ export default function LoginPopup({
     }
   });
 
-  const submitForm: FormEventHandler = async event => {
-    event.preventDefault();
-
+  const submitForm = async () => {
     try {
       await login({
         email,
@@ -69,13 +64,14 @@ export default function LoginPopup({
         {/* Session Status */}
         <AuthSessionStatus className="mb-4" status={status} />
 
-        <form onSubmit={submitForm}>
+        <Form onFinish={submitForm} layout="vertical">
           {/* Email Address */}
-          <div>
-            <Label htmlFor="email">Email</Label>
-
+          <Form.Item
+            label="Email"
+            name="email"
+            help={errors.email}
+            validateStatus={errors.email ? 'error' : ''}>
             <Input
-              id="email"
               type="email"
               value={email}
               className="block mt-1 w-full"
@@ -83,16 +79,15 @@ export default function LoginPopup({
               required
               isFocused={true}
             />
-
-            <InputError messages={errors.email} className="mt-2" />
-          </div>
+          </Form.Item>
 
           {/* Password */}
-          <div className="mt-4">
-            <Label htmlFor="password">Password</Label>
-
+          <Form.Item
+            label="Password"
+            name="password"
+            help={errors.password}
+            validateStatus={errors.password ? 'error' : ''}>
             <Input
-              id="password"
               type="password"
               value={password}
               className="block mt-1 w-full"
@@ -100,9 +95,7 @@ export default function LoginPopup({
               required
               autoComplete="current-password"
             />
-
-            <InputError messages={errors.password} className="mt-2" />
-          </div>
+          </Form.Item>
 
           {/* Remember Me */}
           <div className="block mt-4">
@@ -111,11 +104,9 @@ export default function LoginPopup({
                 id="remember_me"
                 name="remember"
                 checked={shouldRemember}
-                onChange={event => setShouldRemember(event.target.checked)}
-              />
-              <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                onChange={event => setShouldRemember(event.target.checked)}>
                 Remember me
-              </span>
+              </Checkbox>
             </label>
           </div>
 
@@ -138,7 +129,7 @@ export default function LoginPopup({
               Create an account
             </Button>
           </div>
-        </form>
+        </Form>
       </div>
     </Modal>
   );

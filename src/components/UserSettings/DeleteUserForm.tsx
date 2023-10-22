@@ -1,7 +1,6 @@
-import { FormEventHandler, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import axios, { csrf } from '@/lib/axios';
 import Input from '@/ui/Input';
-import InputError from '@/ui/InputError';
 import { AuthErrors, useAuth } from '@/hooks/auth';
 import { Button, Form, Modal } from 'antd';
 
@@ -11,7 +10,6 @@ const DeleteUserForm = () => {
 
   const [confirmingUserDeletion, setConfirmingUserDeletion] = useState(false);
   const passwordInput = useRef<HTMLInputElement>();
-  const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<AuthErrors>({});
   const [status, setStatus] = useState<string | null>(null);
 
@@ -23,7 +21,7 @@ const DeleteUserForm = () => {
     setConfirmingUserDeletion(false);
   };
 
-  const submitForm: FormEventHandler = async () => {
+  const submitForm = async ({ password }: any) => {
     await csrf();
 
     setErrors({});
@@ -86,7 +84,9 @@ const DeleteUserForm = () => {
               name="password"
               rules={[
                 { required: true, message: 'Please input your password!' },
-              ]}>
+              ]}
+              help={errors.password}
+              validateStatus={errors.password ? 'error' : ''}>
               <Input
                 id="password"
                 type="password"
@@ -95,8 +95,6 @@ const DeleteUserForm = () => {
                 placeholder="Password"
               />
             </Form.Item>
-
-            <InputError messages={errors.password} className="mt-2" />
           </div>
         </Form>
       </Modal>

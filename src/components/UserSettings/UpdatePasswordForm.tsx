@@ -1,12 +1,10 @@
 import Input from '@/ui/Input';
-import InputError from '@/ui/InputError';
-import Label from '@/ui/Label';
 import { Transition } from '@headlessui/react';
 
-import { FormEventHandler, useState } from 'react';
+import { useState } from 'react';
 import axios, { csrf } from '@/lib/axios';
 import { AuthErrors } from '@/hooks/auth';
-import { Button } from 'antd';
+import { Button, Form } from 'antd';
 
 const UpdatePasswordForm = () => {
   const [currentPassword, setCurrentPassword] = useState('');
@@ -16,9 +14,7 @@ const UpdatePasswordForm = () => {
   const [errors, setErrors] = useState<AuthErrors>({});
   const [status, setStatus] = useState<string | null>(null);
 
-  const submitForm: FormEventHandler = async event => {
-    event.preventDefault();
-
+  const submitForm = async () => {
     await csrf();
 
     setErrors({});
@@ -45,29 +41,30 @@ const UpdatePasswordForm = () => {
           Update Password
         </h2>
 
-        <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+        <p className="mt-1 text-sm text-gray-600 dark:text-gray-400 mb-4">
           Ensure your account is using a long, random password to stay secure.
         </p>
       </header>
 
-      <form onSubmit={submitForm} className="mt-6 space-y-6">
+      <Form onFinish={submitForm} className="mt-6" layout="vertical">
         {/* Current password */}
-        <div>
-          <Label htmlFor="current_password">Current Password</Label>
+        <Form.Item
+          label="Current Password"
+          help={errors.current_password}
+          validateStatus={errors.current_password ? 'error' : ''}>
           <Input
-            id="current_password"
             type="password"
             className="block mt-1 w-full"
             onChange={event => setCurrentPassword(event.target.value)}
             required
             autoComplete="current_password"
           />
+        </Form.Item>
 
-          <InputError messages={errors.current_password} className="mt-2" />
-        </div>
-
-        <div>
-          <Label htmlFor="password">New Password</Label>
+        <Form.Item
+          label="New Password"
+          help={errors.password}
+          validateStatus={errors.password ? 'error' : ''}>
           <Input
             id="password"
             type="password"
@@ -76,11 +73,11 @@ const UpdatePasswordForm = () => {
             required
             autoComplete="new_password"
           />
-
-          <InputError messages={errors.password} className="mt-2" />
-        </div>
-        <div>
-          <Label htmlFor="password_confirmation">Confirm Password</Label>
+        </Form.Item>
+        <Form.Item
+          label="Confirm Password"
+          help={errors.password_confirmation}
+          validateStatus={errors.password_confirmation ? 'error' : ''}>
           <Input
             id="password_confirmation"
             type="password"
@@ -89,12 +86,7 @@ const UpdatePasswordForm = () => {
             required
             autoComplete="password_confirmation"
           />
-
-          <InputError
-            messages={errors.password_confirmation}
-            className="mt-2"
-          />
-        </div>
+        </Form.Item>
 
         <div className="flex items-center gap-4">
           <Button type="primary" htmlType="submit">
@@ -111,7 +103,7 @@ const UpdatePasswordForm = () => {
             </Transition>
           )}
         </div>
-      </form>
+      </Form>
     </section>
   );
 };

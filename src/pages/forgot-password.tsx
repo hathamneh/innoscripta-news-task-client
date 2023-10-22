@@ -2,12 +2,10 @@ import AuthCard from '@/components/AuthCard';
 import AuthSessionStatus from '@/components/AuthSessionStatus';
 import GuestLayout from '@/components/Layouts/GuestLayout';
 import Input from '@/ui/Input';
-import InputError from '@/ui/InputError';
-import Label from '@/ui/Label';
 import { AuthErrors, useAuth } from '@/hooks/auth';
-import { FormEventHandler, useState } from 'react';
+import { useState } from 'react';
 import Head from 'next/head';
-import PrimaryButton from '@/ui/Buttons/PrimaryButton';
+import { Button, Form } from 'antd';
 
 const ForgotPassword = () => {
   const { forgotPassword } = useAuth({
@@ -19,9 +17,7 @@ const ForgotPassword = () => {
   const [errors, setErrors] = useState<AuthErrors>({});
   const [status, setStatus] = useState(null);
 
-  const submitForm: FormEventHandler = event => {
-    event.preventDefault();
-
+  const submitForm = () => {
     forgotPassword({ email, setErrors, setStatus });
   };
 
@@ -40,10 +36,12 @@ const ForgotPassword = () => {
         {/* Session Status */}
         <AuthSessionStatus className="mb-4" status={status} />
 
-        <form onSubmit={submitForm}>
+        <Form onFinish={submitForm} layout="vertical">
           {/* Email Address */}
-          <div>
-            <Label htmlFor="email">Email</Label>
+          <Form.Item
+            label="Email"
+            help={errors.email}
+            validateStatus={errors.email ? 'error' : ''}>
             <Input
               id="email"
               type="email"
@@ -54,14 +52,14 @@ const ForgotPassword = () => {
               required
               autoFocus
             />
-
-            <InputError messages={errors.email} className="mt-2" />
-          </div>
+          </Form.Item>
 
           <div className="flex items-center justify-end mt-4">
-            <PrimaryButton>Email Password Reset Link</PrimaryButton>
+            <Button type="primary" htmlType="submit">
+              Email Password Reset Link
+            </Button>
           </div>
-        </form>
+        </Form>
       </AuthCard>
     </GuestLayout>
   );

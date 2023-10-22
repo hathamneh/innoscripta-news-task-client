@@ -1,9 +1,9 @@
 import AuthCard from '@/components/AuthCard';
 import AuthSessionStatus from '@/components/AuthSessionStatus';
 import GuestLayout from '@/components/Layouts/GuestLayout';
-import PrimaryButton from '@/ui/Buttons/PrimaryButton';
 import { useAuth } from '@/hooks/auth';
 import { useState } from 'react';
+import { Button } from 'antd';
 
 const VerifyEmail = () => {
   const { logout, resendEmailVerification } = useAuth({
@@ -31,7 +31,8 @@ const VerifyEmail = () => {
         )}
 
         <div className="mt-4 flex items-center justify-between">
-          <PrimaryButton
+          <Button
+            type="primary"
             onClick={() =>
               resendEmailVerification({
                 setStatus,
@@ -39,7 +40,7 @@ const VerifyEmail = () => {
               })
             }>
             Resend Verification Email
-          </PrimaryButton>
+          </Button>
 
           <button
             type="button"

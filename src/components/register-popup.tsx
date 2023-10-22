@@ -1,9 +1,7 @@
 import { AuthErrors, useAuth } from '@/hooks/auth';
-import Label from '@/ui/Label';
 import Input from '@/ui/Input';
-import InputError from '@/ui/InputError';
-import { FormEventHandler, useState } from 'react';
-import { Button, Modal } from 'antd';
+import { useState } from 'react';
+import { Button, Form, Modal } from 'antd';
 
 type Props = {
   visible?: boolean;
@@ -24,9 +22,7 @@ export default function RegisterPopup({
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [errors, setErrors] = useState<AuthErrors>({});
 
-  const submitForm: FormEventHandler = async event => {
-    event.preventDefault();
-
+  const submitForm = async () => {
     try {
       await register({
         name,
@@ -50,13 +46,14 @@ export default function RegisterPopup({
       title="Register"
       footer={null}>
       <div className="space-y-6 p-6 max-w-md mx-auto">
-        <form onSubmit={submitForm}>
+        <Form onFinish={submitForm} layout="vertical">
           {/* Name */}
-          <div>
-            <Label htmlFor="name">Name</Label>
-
+          <Form.Item
+            label="Name"
+            name="name"
+            help={errors.name}
+            validateStatus={errors.name ? 'error' : ''}>
             <Input
-              id="name"
               type="text"
               value={name}
               className="block mt-1 w-full"
@@ -64,32 +61,30 @@ export default function RegisterPopup({
               required
               autoFocus
             />
-
-            <InputError messages={errors.name} className="mt-2" />
-          </div>
+          </Form.Item>
 
           {/* Email Address */}
-          <div className="mt-4">
-            <Label htmlFor="email">Email</Label>
-
+          <Form.Item
+            label="Email"
+            name="email"
+            help={errors.email}
+            validateStatus={errors.email ? 'error' : ''}>
             <Input
-              id="email"
               type="email"
               value={email}
               className="block mt-1 w-full"
               onChange={event => setEmail(event.target.value)}
               required
             />
-
-            <InputError messages={errors.email} className="mt-2" />
-          </div>
+          </Form.Item>
 
           {/* Password */}
-          <div className="mt-4">
-            <Label htmlFor="password">Password</Label>
-
+          <Form.Item
+            label="Password"
+            name="password"
+            help={errors.password}
+            validateStatus={errors.password ? 'error' : ''}>
             <Input
-              id="password"
               type="password"
               value={password}
               className="block mt-1 w-full"
@@ -97,14 +92,14 @@ export default function RegisterPopup({
               required
               autoComplete="new-password"
             />
-
-            <InputError messages={errors.password} className="mt-2" />
-          </div>
+          </Form.Item>
 
           {/* Confirm Password */}
-          <div className="mt-4">
-            <Label htmlFor="passwordConfirmation">Confirm Password</Label>
-
+          <Form.Item
+            label="Confirm Password"
+            name="password_confirmation"
+            help={errors.password_confirmation}
+            validateStatus={errors.password_confirmation ? 'error' : ''}>
             <Input
               id="passwordConfirmation"
               type="password"
@@ -113,12 +108,8 @@ export default function RegisterPopup({
               onChange={event => setPasswordConfirmation(event.target.value)}
               required
             />
+          </Form.Item>
 
-            <InputError
-              messages={errors.password_confirmation}
-              className="mt-2"
-            />
-          </div>
           <div className="flex mt-4 justify-between">
             <Button type="link" onClick={onGoToLogin}>
               Already registered?
@@ -127,7 +118,7 @@ export default function RegisterPopup({
               Register
             </Button>
           </div>
-        </form>
+        </Form>
       </div>
     </Modal>
   );

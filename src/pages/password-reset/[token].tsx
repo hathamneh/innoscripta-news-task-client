@@ -2,12 +2,10 @@ import AuthCard from '@/components/AuthCard';
 import AuthSessionStatus from '@/components/AuthSessionStatus';
 import GuestLayout from '@/components/Layouts/GuestLayout';
 import Input from '@/ui/Input';
-import InputError from '@/ui/InputError';
-import Label from '@/ui/Label';
 import { AuthErrors, useAuth } from '@/hooks/auth';
-import { FormEventHandler, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import PrimaryButton from '@/ui/Buttons/PrimaryButton';
+import { Button, Form } from 'antd';
 
 const PasswordReset = () => {
   const { query } = useRouter();
@@ -20,9 +18,7 @@ const PasswordReset = () => {
   const [errors, setErrors] = useState<AuthErrors>({});
   const [status, setStatus] = useState(null);
 
-  const submitForm: FormEventHandler = event => {
-    event.preventDefault();
-
+  const submitForm = () => {
     resetPassword({
       email,
       password,
@@ -44,11 +40,12 @@ const PasswordReset = () => {
         {/* Session Status */}
         <AuthSessionStatus className="mb-4" status={status} />
 
-        <form onSubmit={submitForm}>
+        <Form onFinish={submitForm} layout="vertical">
           {/* Email Address */}
-          <div>
-            <Label htmlFor="email">Email</Label>
-
+          <Form.Item
+            label="Email"
+            help={errors.email}
+            validateStatus={errors.email ? 'error' : ''}>
             <Input
               id="email"
               type="email"
@@ -58,13 +55,13 @@ const PasswordReset = () => {
               required
               autoFocus
             />
-
-            <InputError messages={errors.email} className="mt-2" />
-          </div>
+          </Form.Item>
 
           {/* Password */}
-          <div className="mt-4">
-            <Label htmlFor="password">Password</Label>
+          <Form.Item
+            label="Password"
+            help={errors.password}
+            validateStatus={errors.password ? 'error' : ''}>
             <Input
               id="password"
               type="password"
@@ -73,14 +70,13 @@ const PasswordReset = () => {
               onChange={event => setPassword(event.target.value)}
               required
             />
-
-            <InputError messages={errors.password} className="mt-2" />
-          </div>
+          </Form.Item>
 
           {/* Confirm Password */}
-          <div className="mt-4">
-            <Label htmlFor="passwordConfirmation">Confirm Password</Label>
-
+          <Form.Item
+            label="Confirm Password"
+            help={errors.password_confirmation}
+            validateStatus={errors.password_confirmation ? 'error' : ''}>
             <Input
               id="passwordConfirmation"
               type="password"
@@ -89,17 +85,14 @@ const PasswordReset = () => {
               onChange={event => setPasswordConfirmation(event.target.value)}
               required
             />
-
-            <InputError
-              messages={errors.password_confirmation}
-              className="mt-2"
-            />
-          </div>
+          </Form.Item>
 
           <div className="flex items-center justify-end mt-4">
-            <PrimaryButton>Reset Password</PrimaryButton>
+            <Button type="primary" htmlType="submit">
+              Reset Password
+            </Button>
           </div>
-        </form>
+        </Form>
       </AuthCard>
     </GuestLayout>
   );

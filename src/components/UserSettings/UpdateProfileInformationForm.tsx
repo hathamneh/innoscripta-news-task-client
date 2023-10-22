@@ -1,11 +1,9 @@
-import { FormEventHandler, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Input from '@/ui/Input';
-import InputError from '@/ui/InputError';
-import Label from '@/ui/Label';
 import axios, { csrf } from '@/lib/axios';
 import { AuthErrors, useAuth } from '@/hooks/auth';
 import { Transition } from '@headlessui/react';
-import { Button } from 'antd';
+import { Button, Form } from 'antd';
 
 const UpdateProfileInformationForm = () => {
   const { user, resendEmailVerification } = useAuth({ middleware: 'auth' });
@@ -22,9 +20,7 @@ const UpdateProfileInformationForm = () => {
     }
   }, [user]);
 
-  const submitForm: FormEventHandler = async event => {
-    event.preventDefault();
-
+  const submitForm = async () => {
     await csrf();
 
     setErrors({});
@@ -47,17 +43,18 @@ const UpdateProfileInformationForm = () => {
           Profile Information
         </h2>
 
-        <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+        <p className="mt-1 text-sm text-gray-600 dark:text-gray-400 mb-4">
           Update your account's profile information and email address
         </p>
       </header>
 
-      <form onSubmit={submitForm} className="mt-6 space-y-6">
+      <Form onFinish={submitForm} className="mt-6" layout="vertical">
         {/* Name */}
-        <div>
-          <Label htmlFor="name">Name</Label>
+        <Form.Item
+          label="Name"
+          help={errors.name}
+          validateStatus={errors.name ? 'error' : ''}>
           <Input
-            id="name"
             type="text"
             name="name"
             value={name}
@@ -66,13 +63,13 @@ const UpdateProfileInformationForm = () => {
             required
             autoFocus
           />
-          <InputError messages={errors.email} className="mt-2" />
-        </div>
+        </Form.Item>
         {/* Email Address */}
-        <div>
-          <Label htmlFor="email">Email</Label>
+        <Form.Item
+          label="Email"
+          help={errors.email}
+          validateStatus={errors.email ? 'error' : ''}>
           <Input
-            id="email"
             type="email"
             name="email"
             value={email}
@@ -81,9 +78,7 @@ const UpdateProfileInformationForm = () => {
             required
             autoFocus
           />
-
-          <InputError messages={errors.email} className="mt-2" />
-        </div>
+        </Form.Item>
 
         {user?.must_verify_email && user?.email_verified_at === null && (
           <div>
@@ -124,7 +119,7 @@ const UpdateProfileInformationForm = () => {
             </Transition>
           )}
         </div>
-      </form>
+      </Form>
     </section>
   );
 };
