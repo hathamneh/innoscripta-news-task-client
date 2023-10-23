@@ -10,11 +10,15 @@ import { useEffect, useState } from 'react';
 
 const Profile = () => {
   const router = useRouter();
-  useAuth({
+  const { user, isLoading } = useAuth({
     middleware: 'auth',
-    redirectIfNotAuthenticated: '/latest',
   });
   const [tab, setTab] = useState('profile');
+
+  useEffect(() => {
+    if (isLoading) return;
+    if (!user) router.push('/latest');
+  }, [user, isLoading]);
 
   useEffect(() => {
     if (router.query.tab) {
@@ -23,6 +27,9 @@ const Profile = () => {
   }, [router.query.tab]);
 
   const matches = useScreenLg();
+
+  if (!user) return null;
+
   return (
     <AppLayout hideSidebar>
       <Head>

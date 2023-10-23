@@ -64,8 +64,6 @@ export const useAuth = ({
       if (isAxiosError(error) && error.response) {
         if (error.response.status === 409) {
           await router.push('/verify-email');
-        }
-        if (error.response.status === 401) {
           return null;
         }
       }
