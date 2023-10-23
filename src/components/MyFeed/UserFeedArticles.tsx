@@ -22,7 +22,7 @@ export const UserFeedArticles = () => {
   useEffect(() => {
     if (!user?.settings) return;
     reload();
-  }, [user?.settings, reload]);
+  }, [user?.settings]);
 
   return (
     <>
